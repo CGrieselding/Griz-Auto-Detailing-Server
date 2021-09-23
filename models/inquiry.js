@@ -30,7 +30,7 @@ const Inq = db.define("inq", {
     require: true,
     allowNull: false,
   },
-  // owner: {                          DO I EVEN NEED THIS??
+  // owner: {                          
   //   type: DataTypes.INTEGER,
   // },
 });

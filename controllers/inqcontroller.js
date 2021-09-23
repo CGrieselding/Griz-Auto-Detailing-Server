@@ -14,7 +14,7 @@ router.post("/sendInq", validateJWT, async (req, res) => {
       phoneNumber: phoneNumber,
       car: car,
       message: message,
-      userId: req.user.id, 
+      userId: req.user.id,
     }).then((inq) => {
       res.status(201).json({
         inq: inq,
@@ -35,7 +35,7 @@ router.get("/viewInq", validateJWT, async (req, res) => {
   try {
     const userInq = await models.InqModel.findAll({
       where: {
-        owner: id, // ***OWNER***
+        userId: id, // ***OWNER WAS HERE***
       },
     });
     res.status(200).json(userInq);
@@ -55,7 +55,7 @@ router.put("/updateInq/:id", validateJWT, async (req, res) => {
   const query = {
     where: {
       id: inqId,
-      owner: userId,    // ***OWNER***
+      userId: userId, // ***OWNER WAS HERE***
     },
   };
 
@@ -86,7 +86,7 @@ router.delete("/deleteInq/:id", validateJWT, async (req, res) => {
     const query = {
       where: {
         id: inqId,
-        owner: userId,    // ***OWNER***
+        userId: userId, // ***OWNER WAS HERE***
       },
     };
     await models.InqModel.destroy(query);
@@ -102,8 +102,19 @@ router.delete("/deleteInq/:id", validateJWT, async (req, res) => {
 
 // View ALL inquiries -- **ADMIN ONLY**
 router.get("/allInq", async (req, res) => {
+  let userId = req.user.id;  // Do I need to add this??
+  
   try {
-    const allInquiries = await models.InqModel.findAll();
+
+    const query = {
+      where: {
+        userId: userId,
+        isAdmin: true,
+      },
+    };
+
+    const allInquiries = await models.InqModel.findAll(query);
+
     res.status(200).json(allInquiries);
   } catch (err) {
     res.status(500).json({

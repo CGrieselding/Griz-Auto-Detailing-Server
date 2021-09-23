@@ -14,7 +14,7 @@ const Rev = db.define("rev", {
     require: true,
   },
   date: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.DATEONLY,
     allowNull: false,
     require: true,
   },
@@ -26,7 +26,7 @@ const Rev = db.define("rev", {
   imageURL: {
     type: DataTypes.STRING,
   },
-  // owner: {                      DO I EVEN NEED THIS??
+  // owner: {                      
   //   type: DataTypes.INTEGER,
   // },
 });

@@ -13,7 +13,7 @@ router.post("/postRev", validateJWT, async (req, res) => {
       date: date,
       review: review,
       imageURL: imageURL,
-      userId: req.user.id, // DO I NEED "OWNER" HERE??
+      userId: req.user.id,
     }).then((rev) => {
       res.status(201).json({
         rev: rev,
@@ -48,7 +48,7 @@ router.put("/updateRev/:id", validateJWT, async (req, res) => {
   const query = {
     where: {
       id: revId,
-      owner: userId,  // ***OWNER***
+      userId: userId, // ***OWNER WAS HERE***
     },
   };
 
@@ -78,7 +78,7 @@ router.delete("/deleteRev/:id", validateJWT, async (req, res) => {
     const query = {
       where: {
         id: revId,
-        owner: userId,    // ***OWNER***
+        userId: userId, // ***OWNER WAS HERE***
       },
     };
     await models.RevModel.destroy(query);
@@ -92,9 +92,10 @@ router.delete("/deleteRev/:id", validateJWT, async (req, res) => {
   }
 });
 
-/*  -- **ADMIN ONLY**
+/* Delete a users review -- **ADMIN ONLY** 
 
-        ADD CODE
+          ADD CODE??
+
 */
 
 module.exports = router;
