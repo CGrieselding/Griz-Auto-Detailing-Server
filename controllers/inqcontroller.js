@@ -35,7 +35,7 @@ router.get("/viewInq", validateJWT, async (req, res) => {
   try {
     const userInq = await models.InqModel.findAll({
       where: {
-        userId: id, // ***OWNER WAS HERE***
+        userId: id,
       },
     });
     res.status(200).json(userInq);
@@ -86,7 +86,7 @@ router.delete("/deleteInq/:id", validateJWT, async (req, res) => {
     const query = {
       where: {
         id: inqId,
-        userId: userId, // ***OWNER WAS HERE***
+        userId: userId,
       },
     };
     await models.InqModel.destroy(query);
@@ -109,7 +109,7 @@ router.get("/allInq", async (req, res) => {
         isAdmin: true,
       },
     }).then((admin) => {
-      if (admin) {
+      if (admin === true) {
          models.InqModel.findAll()
         .then((allInquiries) => {res.status(200).json(allInquiries)});
       } else {

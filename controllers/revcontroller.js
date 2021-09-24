@@ -48,7 +48,7 @@ router.put("/updateRev/:id", validateJWT, async (req, res) => {
   const query = {
     where: {
       id: revId,
-      userId: userId, // ***OWNER WAS HERE***
+      userId: userId,
     },
   };
 
@@ -78,7 +78,7 @@ router.delete("/deleteRev/:id", validateJWT, async (req, res) => {
     const query = {
       where: {
         id: revId,
-        userId: userId, // ***OWNER WAS HERE***
+        userId: userId,
       },
     };
     await models.RevModel.destroy(query);
@@ -91,11 +91,5 @@ router.delete("/deleteRev/:id", validateJWT, async (req, res) => {
     });
   }
 });
-
-/* Delete a users review -- **ADMIN ONLY** 
-
-          ADD CODE IF WANTED
-
-*/
 
 module.exports = router;

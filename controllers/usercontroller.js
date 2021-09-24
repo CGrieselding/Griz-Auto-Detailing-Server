@@ -79,20 +79,25 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Allows users to see their activity (Database Association)
-router.get("/myInfo", async (req, res) => {
+// Allow users to see their activity (reviews & inquiries)
+router.get("/myInfo", validateJWT, async (req, res) => {
+  const userId = req.user.id;
+
   try {
-    await models.UserModel.findAll({
+    await models.UserModel.findOne({
+      where: {
+        id: userId,
+      },
       include: [
         {
           model: models.RevModel,
+        },
+        {
           model: models.InqModel,
         },
       ],
     }).then((users) => {
-      res.status(200).json({
-        users: users,
-      });
+      res.status(200).json(users);
     });
   } catch (err) {
     res.status(500).json({
@@ -101,26 +106,27 @@ router.get("/myInfo", async (req, res) => {
   }
 });
 
-// Delete a user -- **ADMIN ONLY** 
+// Delete a user -- **ADMIN ONLY**
 router.delete("/deleteUser/:id", validateJWT, async (req, res) => {
-  const ownerId = req.params.id; 
-  
+  const ownerId = req.params.id;
+
   const query = {
     where: {
-      id: ownerId, // ***OWNER WAS HERE***
+      id: ownerId,
     },
   };
+
   try {
     await models.UserModel.findOne({
       where: {
         isAdmin: true,
       },
     }).then((admin) => {
-      if (admin) {
+      if (admin === true) {
         models.UserModel.destroy(query);
         res.status(200).json({ message: "User has been deleted." });
       } else {
-        res.status(401).json({
+        res.status(501).json({
           message:
             "Sorry! This request lacks valid authentication credentials.",
         });
