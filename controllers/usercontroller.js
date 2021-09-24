@@ -2,12 +2,12 @@ const router = require("express").Router();
 const { models } = require("../models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-let validateJWT = require('../middleware/validate-jwt');
+let validateJWT = require("../middleware/validate-jwt");
 const { UniqueConstraintError } = require("sequelize/lib/errors");
 
 // Create Account
 router.post("/createAcct", async (req, res) => {
-  const { firstName, lastName, email, password, isAdmin} = req.body.user;
+  const { firstName, lastName, email, password, isAdmin } = req.body.user;
 
   try {
     await models.UserModel.create({
@@ -15,7 +15,7 @@ router.post("/createAcct", async (req, res) => {
       lastName,
       email,
       password: bcrypt.hashSync(password, 10),
-      isAdmin
+      isAdmin,
     }).then((user) => {
       let token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
         expiresIn: 60 * 60 * 24,
@@ -81,7 +81,6 @@ router.post("/login", async (req, res) => {
 
 // Allows users to see their activity (Database Association)
 router.get("/myInfo", async (req, res) => {
-  
   try {
     await models.UserModel.findAll({
       include: [
@@ -102,21 +101,35 @@ router.get("/myInfo", async (req, res) => {
   }
 });
 
-// Delete user -- **ADMIN ONLY**
+// Delete a user -- **ADMIN ONLY** 
 router.delete("/deleteUser/:id", validateJWT, async (req, res) => {
-  const ownerId = req.user.id;
-
+  const ownerId = req.params.id; 
+  
+  const query = {
+    where: {
+      id: ownerId, // ***OWNER WAS HERE***
+    },
+  };
   try {
-    const query = {
+    await models.UserModel.findOne({
       where: {
-        id: ownerId,    // ***OWNER WAS HERE***
         isAdmin: true,
       },
-    };
-    await models.UserModel.destroy(query);
-    res.status(200).json({ message: "User has been deleted." });
+    }).then((admin) => {
+      if (admin) {
+        models.UserModel.destroy(query);
+        res.status(200).json({ message: "User has been deleted." });
+      } else {
+        res.status(401).json({
+          message:
+            "Sorry! This request lacks valid authentication credentials.",
+        });
+      }
+    });
   } catch (err) {
-    res.status(500).json({ error: `Oh no! Failed to delete this user. Error: ${err}` });
+    res
+      .status(500)
+      .json({ error: `Oh no! Failed to delete this user. Error: ${err}` });
   }
 });
 

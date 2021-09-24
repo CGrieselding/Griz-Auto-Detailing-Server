@@ -94,7 +94,7 @@ router.delete("/deleteRev/:id", validateJWT, async (req, res) => {
 
 /* Delete a users review -- **ADMIN ONLY** 
 
-          ADD CODE??
+          ADD CODE IF WANTED
 
 */
 

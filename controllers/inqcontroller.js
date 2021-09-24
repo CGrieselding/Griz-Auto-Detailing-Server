@@ -102,20 +102,23 @@ router.delete("/deleteInq/:id", validateJWT, async (req, res) => {
 
 // View ALL inquiries -- **ADMIN ONLY**
 router.get("/allInq", async (req, res) => {
-  let userId = req.user.id;  // Do I need to add this??
   
   try {
-
-    const query = {
+    await models.UserModel.findOne({
       where: {
-        userId: userId,
         isAdmin: true,
       },
-    };
-
-    const allInquiries = await models.InqModel.findAll(query);
-
-    res.status(200).json(allInquiries);
+    }).then((admin) => {
+      if (admin) {
+         models.InqModel.findAll()
+        .then((allInquiries) => {res.status(200).json(allInquiries)});
+      } else {
+        res.status(401).json({
+          message:
+            "Sorry! This request lacks valid authentication credentials.",
+        });
+      }
+    });
   } catch (err) {
     res.status(500).json({
       error: `Oh no! Failed to load all inquiries. Error: ${err}`,
