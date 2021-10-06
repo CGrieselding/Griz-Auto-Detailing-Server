@@ -8,11 +8,11 @@ Why did I choose Griz Auto Detailing? Growing up, I was always taught to take go
 
 ## Griz Auto Detailing -- Server
 
-The server for the Griz Auto Detailing app was built using a number of technologies including Express, Node, JSON Web Token, Bcrypt, PostgresSQL, and Sequelize. The server is comprised of 15 REST API endpoints and 3 database tables. 2 of the tables have full create, read, update, delete (CRUD) capabilities. The server also utlizies role based acess control allowing admin personnel to access 3 endpoints that a regular cannot use.
+The server for the Griz Auto Detailing app was built using a number of technologies including Express, NodeJs, JSON Web Token, Bcrypt, PostgresSQL, and Sequelize. The server is comprised of 15 REST API endpoints and 3 database tables. 2 of the tables have full create, read, update, delete (CRUD) capabilities. The server also utlizies role based access control allowing admin users to access 3 endpoints that a regular user cannot.
 
 ## Server -- Endpoints
 
-The following 3 tables delineate the API endpoints and the corresponding functionality.
+The following 3 tables delineate the API endpoints and their corresponding functionality.
 
 ### User Enpoints (usercontroller.js)
 
@@ -22,9 +22,52 @@ The following 3 tables delineate the API endpoints and the corresponding functio
 |    POST          | /login      | Allows returning users to login |
 |    GET           | /myInfo     | Allows users to view all of their submitted reviews and sent inquiries (using database association) |
 |    GET           | /admin      | Decides whether or not the logged in user is an admin user or a regular user |
-|  GET *admin only | /viewUser   | Allows admin users to view all registered users in the database |
-|DELETE *admin only| /deleteUser | Allows admin users to delete a user's account |
+|  GET *admin only* | /viewUser   | Allows admin users to view all registered users in the database |
+|DELETE *admin only*| /deleteUser | Allows admin users to delete a user's account |
 
 ### User Review Endpoints (revcontroller.js)
 
+|  CRUD Operation  |  Endpoint   |             Function          |
+| ---------------- | ----------- | ----------------------------- |
+|    CREATE        | /postREV    | Allows users to create and post a review |
+|   READ           | /viewRev    | Allows users to view all the posted reviews on the app |
+|  UPDATE          | /updateRev  | Allows users to update/edit their posted review(s) |
+|  DELETE          | /deleteRev  | Allows users to permanently delete their posted review(s) |
+
+### User Inquiry Endpoints (inqcontroller.js)
+
+|  CRUD Operation  |  Endpoint   |             Function          |
+| ---------------- | ----------- | ----------------------------- |
+|    CREATE        | /sendInq    | Allows users send a private inquiry to Griz Auto Detailing |
+|    READ          | /viewInq    | Allows users to view their own sent inquiries |
+|    UPDATE        | /updateInq   | Allows users to update/edit their send inquiry |
+|    DELETE        | /deleteInq   | Allows users to permanently delete their sent inquiry |
+| READ *admin only* | /allInq     | Allows admin users to view all the sent inquiries in the database |
+
 ## Server -- Databate Tables
+
+The following 3 tables display the content of the server's database tables along with corresponding keys and value types.
+
+### User Table  (user.js )
+
+|  id |  firstName | lastName | email | password | isAdmin |
+| --- | ---------- | -------- | ----- | -------- | ------- |
+| UUID | string    | string   | string | string | boolean |
+
+### User Review Table (review.js)
+
+|  id |  title     | date     | review | imageURL | userId |
+| --- | ---------- | -------- | -----  | -------- | ------- |
+| UUID | string    | date only | string | string (link to a social media post and/or video) | integer (database association) |
+
+### User Inquiry Table (inquiry.js)
+
+|  id |  fullName  | email    | phoneNumber | car | message | userId |
+| --- | ---------- | -------- | -----       | -------- | ------- | ---- |
+| UUID | string    | string   | string      | string | string | integer (database association) |
+
+## Learn More
+
+A big shoutout to the [Sequelize v6 Documentation](https://sequelize.org/), which was very helpful in building my backend.
+
+Please feel free to peruse my GitHub files and accompanying code. I am always looking for ways to learn something new and improve my code. Happy coding!
