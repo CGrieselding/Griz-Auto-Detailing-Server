@@ -68,7 +68,7 @@ router.post("/login", async (req, res) => {
         });
       } else {
         res.status(500).send({
-          error: "Oh no! Failed to authenticate user!",
+          error: "Oh no! Failed to authenticate user.",
         });
       }
     });
@@ -106,9 +106,41 @@ router.get("/myInfo", validateJWT, async (req, res) => {
   }
 });
 
+// Decides whether the logged in user is an admin or not
+router.get("/admin", validateJWT, async (req, res) => {
+  const adminId = req.user.id;
+
+  try {
+    const adminUser = await models.UserModel.findOne({
+      where: {
+        isAdmin: true,
+        id: adminId,
+      },
+    });
+    res.status(200).json(adminUser);
+  } catch (err) {
+    res.status(500).json({
+      error: `Oh no! Failed to authenticate user. Error: ${err}`,
+    });
+  }
+});
+
+// View all users -- **ADMIN ONLY**
+router.get("/viewUser", async (req, res) => {
+  try {
+    const allUsers = await models.UserModel.findAll();
+    res.status(200).json(allUsers);
+  } catch (err) {
+    res.status(500).json({
+      error: `Oh no! Failed to load all users. Error: ${err}`,
+    });
+  }
+});
+
 // Delete a user -- **ADMIN ONLY**
 router.delete("/deleteUser/:id", validateJWT, async (req, res) => {
   const ownerId = req.params.id;
+  const { isAdmin } = req.user;
 
   const query = {
     where: {
@@ -121,8 +153,8 @@ router.delete("/deleteUser/:id", validateJWT, async (req, res) => {
       where: {
         isAdmin: true,
       },
-    }).then((admin) => {
-      if (admin === true) {
+    }).then(() => {
+      if (isAdmin === true) {
         models.UserModel.destroy(query);
         res.status(200).json({ message: "User has been deleted." });
       } else {

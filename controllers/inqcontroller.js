@@ -55,7 +55,7 @@ router.put("/updateInq/:id", validateJWT, async (req, res) => {
   const query = {
     where: {
       id: inqId,
-      userId: userId, // ***OWNER WAS HERE***
+      userId: userId,
     },
   };
 
@@ -101,17 +101,17 @@ router.delete("/deleteInq/:id", validateJWT, async (req, res) => {
 });
 
 // View ALL inquiries -- **ADMIN ONLY**
-router.get("/allInq", async (req, res) => {
-  
+router.get("/allInq", validateJWT, async (req, res) => {
+
   try {
-    await models.UserModel.findOne({
+     await models.UserModel.findOne({
       where: {
-        isAdmin: true,
+        id: req.user.id
       },
-    }).then((admin) => {
-      if (admin === true) {
-         models.InqModel.findAll()
-        .then((allInquiries) => {res.status(200).json(allInquiries)});
+    }).then( async (user) => {
+      if (user.isAdmin === true) {
+        const allInqs = await models.InqModel.findAll();
+        res.status(200).json(allInqs);
       } else {
         res.status(401).json({
           message:
