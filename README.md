@@ -1,4 +1,4 @@
-# Griz Auto Detailing Web Applicaiton
+# Griz Auto Detailing Web Application
 
 Griz Auto Detailing is a convenient, easily navigable application, where users can create an account, login, read about our automobile detailing services, view pictures of our previous work, send us inquiries, and post their personal reviews.
 
@@ -19,6 +19,12 @@ The following 3 tables delineate the API endpoints and the corresponding functio
 |  CRUD Operation  |  Endpoint   |             Function          |
 | ---------------- | ----------- | ----------------------------- |
 |    POST          | /createAcct | Allow users to create a new      account   |
-| Content Cell     | /login      |
+|    POST          | /login      | Allows returning users to login |
+|    GET           | /myInfo     | Allows users to view all of their submitted reviews and sent inquiries (using database association) |
+|    GET           | /admin      | Decides whether or not the logged in user is an admin user or a regular user |
+|  GET *admin only | /viewUser   | Allows admin users to view all registered users in the database |
+|DELETE *admin only| /deleteUser | Allows admin users to delete a user's account |
+
+### User Review Endpoints (revcontroller.js)
 
 ## Server -- Databate Tables
